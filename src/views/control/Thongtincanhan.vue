@@ -49,11 +49,12 @@
                 </CRow>
                 <CRow>
                     <CCol sm="12">
-                        <CInput label="Xác nhận mật khẩu mới" type="password" v-model="newpass2"  />
+                        <CInput label="Xác nhận mật khẩu mới ..." type="password" v-model="newpass2"  />
                     </CCol>
                 </CRow>
             </CCardBody>
             <CCardFooter class="d-flex justify-content-end">
+                <CButton @click="getUserInfo(apiBimat)" color="info" class="mr-2">Hủy</CButton>
                 <CButton @click="resetData()" color="danger" class="mr-2">Hủy</CButton>
                 <CButton @click="senddata()" color="success">Xác nhận</CButton>
             </CCardFooter>
@@ -74,7 +75,7 @@
 
   </div>
 </template>
-
+<script src="https://unpkg.com/vue-image-upload-resize"></script>
 <script>
 import axios from 'axios';
 const qs = require('querystring');
@@ -86,18 +87,30 @@ export default {
       thongbaoloi:[],
       oldpass:'',
       newpass1:'',
-      newpass2:''
+      newpass2:'',
     }
   },
   created: function () {
-    //axios.defaults.headers.common['Authorization'] = this.apiBimat;
-    axios.defaults.headers.common['Authorization'] = 12345;
+    axios.defaults.headers.common['masobimat'] = 12345;
     axios.defaults.headers.common['url'] = 'products/';
+    this.getUserInfo(this.apiBimat);
   },
   mounted() {
     //this.importAll(require.context('../imgs/', true, /\.jpg$/));
   },
   methods: {
+    getUserInfo: function(e){
+      axios.get('http://pintuanphuong.com.vn/api/v1/getuserinfo/'+e)
+        .then(response => {
+          this.userInfo = response.data; console.log(this.userInfo);
+      })  
+    },
+    setImage: function(output) {
+      this.hasImage = true;
+      this.image = output;
+      console.log(output.info)
+      console.log('Exif', output.exif)
+    },
     sendEditData: function(e) {
         const headers = {
           'Content-Type': 'application/x-www-form-urlencoded'
@@ -133,7 +146,6 @@ export default {
     submitForm(){
             let formData = new FormData();
             formData.append('file', this.file);
-
             axios.post('http://pintuanphuong.com.vn/public/api.php',
                 formData,
                 {
@@ -142,15 +154,43 @@ export default {
                 }
               }
             ).then(function(data){
-              console.log(data.data);
+              if(data.data == 'success'){
+                this.updateAvatar(this.file.name)
+              }else {
+                console.log('ko đẩy đc file')
+              }
             })
             .catch(function(){
               console.log('FAILURE!!');
             });
       },
-  
+    updateAvatar: function(e){
+      const headers = {
+          'Content-Type': 'application/x-www-form-urlencoded'
+        };
+
+        const payload = {
+          avatar: e,
+        };
+
+        //Send data with form url using querystring node package for it.
+        axios
+          .put('http://pintuanphuong.com.vn/api/v1/updateavatar/'+ this.apiBimat, qs.stringify(payload), {
+            headers: headers
+          })
+          .then(res => {
+            console.log(res.data);
+            this.thongbaoloi = res.data;
+            this.disabled= false;
+          })
+          .catch(err => {
+            console.log(err);
+          });
+          this.myModal = false;
+          this.fixedToasts++
+    },
       onChangeFileUpload(){
-        this.file = this.$refs.file.files[0]; console.log(this.file);
+        this.file = this.$refs.file.files[0]; 
       },
 
       importAll(r) {

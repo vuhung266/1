@@ -115,9 +115,6 @@ export default {
         .then(response => {
           this.hangsx = response.data.hangsx;// console.log(this.hangsx);
         })
-        .catch(e => {
-          this.errors.push(e)
-        })
     },
     addnew: function() {
       this.myModal= true;
