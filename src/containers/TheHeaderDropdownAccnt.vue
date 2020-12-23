@@ -8,8 +8,8 @@
     <template #toggler>
       <CHeaderNavLink>
         <div class="c-avatar">
-          <img
-            src="img/avatars/6.jpg"
+          <img v-if="userdata"
+            :src="userdata.avatar"
             class="c-avatar-img "
           />
         </div>
@@ -35,16 +35,15 @@ export default {
       userdata:[]
     }
   },
-  created: function () {
-    this.userdata = $cookies.get('user_data');
-    if (!this.userdata) {
+  created: function () { 
+    this.userdata = $cookies.get('user_data'); console.log(this.userdata);
+    if (this.userdata == null) {
       this.$router.push({path: '/pages/login'});
     }
   },
   methods: {
     logout: function(){
       window.localStorage.auth = false;
-      $cookies.remove('user_data')
       this.$router.push({path: '/pages/login'});
     },
     gotoUrl: function(e){

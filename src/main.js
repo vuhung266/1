@@ -29,7 +29,7 @@ Vue.mixin({
           var bimat1 = $cookies.get('user_data');
           return bimat1.apiKey;
         }
-        return 'không có api'
+        return false;
       }
     }
   }

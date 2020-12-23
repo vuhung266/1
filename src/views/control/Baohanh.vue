@@ -126,17 +126,18 @@ export default {
     }
   },
   created: function () {
-    this.getAllTimeBaoHanh();
-    axios.defaults.headers.common['Authorization'] = this.apiBimat;
+    if(this.apiBimat != false){
+      this.getAllTimeBaoHanh();
+      axios.defaults.headers.common['Authorization'] = this.apiBimat;
+    }else {
+      console.log('aaaa')
+    }
   },
   methods: {
     getAllTimeBaoHanh: function(){
       axios.get('http://pintuanphuong.com.vn/api/v1/timebaohanh')
         .then(response => {
           this.timebaohanh = response.data.data; //console.log(this.timebaohanh);
-        })
-        .catch(e => {
-          this.errors.push(e)
         })
     },
     addnew: function() {

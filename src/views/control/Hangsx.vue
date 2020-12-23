@@ -106,8 +106,12 @@ export default {
     }
   },
   created: function () {
-    this.getAllHangsx();
-    axios.defaults.headers.common['Authorization'] = this.apiBimat;
+    if(this.apiBimat != false){
+      this.getAllHangsx();
+      axios.defaults.headers.common['Authorization'] = this.apiBimat;
+    }else{
+      console.log('ko ổn rồi')
+    }
   },
   methods: {
     getAllHangsx: function(){

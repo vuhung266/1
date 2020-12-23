@@ -9,7 +9,7 @@
             <CCardBody>
                 <p>Họ tên: {{userInfo.name}}</p>
                 <p>Địa chỉ email: {{userInfo.email}}</p>
-                <p>Ngày tạo: {{userInfo.createdAt}}</p>
+                <p>Ngày tạo: {{userInfo.created_at}}</p>
             </CCardBody>
             </CCard>
         </CCol>
@@ -19,10 +19,18 @@
                 <CIcon name="cil-User" /> Ảnh đại diện
             </CCardHeader>
             <CCardBody>
-                <img src="http://pintuanphuong.com.vn/public/products/Asset 4@4x.png" height=50px />
-                <p><input type="file" id="file" ref="file" v-on:change="onChangeFileUpload()"/></p>
-                <p><CButton v-on:click="submitForm()" color="success">Upload</CButton></p>
+              <CRow>
+                <CCol md="4">
+                  <div v-if="userInfo.avatar"><img :src="userInfo.avatar" height=50px /></div>
+                </CCol>
+                <CCol md="8">
+                  <input type="file" id="file" ref="file" v-on:change="onChangeFileUpload()"/>
+                </CCol>
+              </CRow>  
             </CCardBody>
+             <CCardFooter class="d-flex justify-content-end">
+                <CButton v-on:click="submitForm()" color="success">Upload</CButton>
+            </CCardFooter>
             </CCard>
         </CCol>
     </CRow>
@@ -78,6 +86,7 @@
 <script src="https://unpkg.com/vue-image-upload-resize"></script>
 <script>
 import axios from 'axios';
+import VueCookies from 'vue-cookies';
 const qs = require('querystring');
 export default {
   data () {
@@ -87,13 +96,14 @@ export default {
       thongbaoloi:[],
       oldpass:'',
       newpass1:'',
-      newpass2:'',
+      newpass2:''
     }
   },
   created: function () {
-    axios.defaults.headers.common['masobimat'] = 12345;
-    axios.defaults.headers.common['url'] = 'products/';
+    axios.defaults.headers.common['Authorization'] = this.apiBimat;
     this.getUserInfo(this.apiBimat);
+    axios.defaults['masobimat'] = 12345;
+    axios.defaults['url'] = 'products/'; 
   },
   mounted() {
     //this.importAll(require.context('../imgs/', true, /\.jpg$/));
@@ -102,7 +112,7 @@ export default {
     getUserInfo: function(e){
       axios.get('http://pintuanphuong.com.vn/api/v1/getuserinfo/'+e)
         .then(response => {
-          this.userInfo = response.data; console.log(this.userInfo);
+          this.userInfo = response.data;
       })  
     },
     setImage: function(output) {
@@ -129,7 +139,6 @@ export default {
           .then(res => {
             console.log(res.data);
             this.thongbaoloi = res.data;
-            this.disabled= false;
           })
           .catch(err => {
             console.log(err);
@@ -143,52 +152,51 @@ export default {
     validator (val) {
       return val ? val.length >= 6 : false
     },
-    submitForm(){
+    submitForm: function() {
             let formData = new FormData();
-            formData.append('file', this.file);
-            axios.post('http://pintuanphuong.com.vn/public/api.php',
-                formData,
-                {
-                headers: {
-                    'Content-Type': 'multipart/form-data'
+            if(this.file){  //check xem nếu chọn file
+              var tenanh = this.file.name;
+              formData.append('file', this.file);
+              axios.post('http://pintuanphuong.com.vn/public/api.php',
+                  formData,
+                  {
+                  headers: {
+                      'Content-Type': 'multipart/form-data'
+                  }
                 }
-              }
-            ).then(function(data){
-              if(data.data == 'success'){
-                this.updateAvatar(this.file.name)
-              }else {
-                console.log('ko đẩy đc file')
-              }
-            })
-            .catch(function(){
-              console.log('FAILURE!!');
-            });
+              ).then(getdata =>{ 
+                if(getdata.data == 'success'){
+                  this.updateTextAvatar(tenanh);
+                }else {
+                  console.log('ko đẩy đc file');
+                }
+               
+              })
+            }else{
+              this.thongbaoloi.message = 'Chưa chọn file';
+              this.fixedToasts++;
+               
+            }
+            
       },
-    updateAvatar: function(e){
-      const headers = {
-          'Content-Type': 'application/x-www-form-urlencoded'
-        };
-
-        const payload = {
-          avatar: e,
-        };
-
-        //Send data with form url using querystring node package for it.
-        axios
-          .put('http://pintuanphuong.com.vn/api/v1/updateavatar/'+ this.apiBimat, qs.stringify(payload), {
-            headers: headers
-          })
-          .then(res => {
-            console.log(res.data);
-            this.thongbaoloi = res.data;
-            this.disabled= false;
-          })
-          .catch(err => {
-            console.log(err);
-          });
-          this.myModal = false;
-          this.fixedToasts++
-    },
+    updateTextAvatar: function(tenanh) { 
+      const headers1 = {
+        'Content-Type': 'application/x-www-form-urlencoded'
+      };
+      const payload1 = {
+        avatar: 'http://pintuanphuong.com.vn/public/products/'+ tenanh
+      };
+      axios.put('http://pintuanphuong.com.vn/api/v1/updateavatar/106fd140cb42137bec5226ffe3cae78d', qs.stringify(payload1), {
+          headers: headers1
+      })
+      .then(res => { console.log(res.data.message);
+        this.thongbaoloi.message = res.data.message;
+        this.fixedToasts++;
+        this.getUserInfo(this.apiBimat);
+        $cookies.remove('user_data');
+        VueCookies.set('user_data', this.userInfo);
+      })
+    },  
       onChangeFileUpload(){
         this.file = this.$refs.file.files[0]; 
       },

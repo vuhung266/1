@@ -27,7 +27,7 @@
                   </CInput>
                   <CRow>
                     <CCol col="6" class="text-left">
-                      <CButton color="primary" class="px-4" @click="senddata()">Đằng nhập</CButton>
+                      <CButton type="submit" color="primary" class="px-4" @click="senddata()">Đằng nhập</CButton>
                     </CCol>
                     <CCol col="6" class="text-right">
                       <CButton color="link" class="px-0" @click="addstore()">Quên mật khẩu?</CButton>
@@ -87,8 +87,8 @@ export default {
           axios.post('https://pintuanphuong.com.vn/api/v1/login', qs.stringify(payload), {
             headers: headers
           })
-          .then(res => {
-            this.thongbaoloi = res.data;
+          .then(res => { console.log(res);
+            this.thongbaoloi = res.data.message;
             if(res.data.error == false){
               this.auth = res.data;
               this.$store.commit('set', ['auth', this.auth]);
