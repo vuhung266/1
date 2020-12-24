@@ -59,7 +59,6 @@ import axios from 'axios';
 const qs = require('querystring');
 import VueCookies from 'vue-cookies';
 export default {
-  middleware: 'authenticated',
   data() {
     return{
       email:'',
@@ -87,7 +86,7 @@ export default {
           axios.post('https://pintuanphuong.com.vn/api/v1/login', qs.stringify(payload), {
             headers: headers
           })
-          .then(res => { console.log(res);
+          .then(res => {
             this.thongbaoloi = res.data.message;
             if(res.data.error == false){
               this.auth = res.data;

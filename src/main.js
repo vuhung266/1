@@ -5,7 +5,6 @@ import router from './router'
 import CoreuiVue from '@coreui/vue'
 import { iconsSet as icons } from './assets/icons/icons.js'
 import store from './store'
-
 Vue.config.performance = true
 Vue.use(CoreuiVue)
 Vue.prototype.$log = console.log.bind(console)
@@ -28,9 +27,11 @@ Vue.mixin({
         if($cookies.get('user_data')){
           var bimat1 = $cookies.get('user_data');
           return bimat1.apiKey;
+        }else{
+          this.$router.push({path: '/pages/login'});
+          return fail;
         }
-        return false;
       }
     }
   }
-})
+});

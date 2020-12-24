@@ -86,7 +86,6 @@
 
   </div>
 </template>
-
 <script>
 import axios from 'axios';
 const qs = require('querystring');
@@ -102,15 +101,15 @@ export default {
       thongbaoloi:[],
       ModalDelete: false,
       itemBiXoa:[],
-
     }
   },
   created: function () {
-    if(this.apiBimat != false){
-      this.getAllHangsx();
-      axios.defaults.headers.common['Authorization'] = this.apiBimat;
+    if(this.apiBimat == undefined){
+      console.log('Không lấy đc mã bí mật')
     }else{
-      console.log('ko ổn rồi')
+      axios.defaults.headers.common['Authorization'] = this.apiBimat;
+      this.getAllHangsx();
+      
     }
   },
   methods: {

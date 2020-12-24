@@ -62,7 +62,7 @@
                 </CRow>
             </CCardBody>
             <CCardFooter class="d-flex justify-content-end">
-                <CButton @click="getUserInfo(apiBimat)" color="info" class="mr-2">Hủy</CButton>
+                <CButton @click="getUserInfo()" color="info" class="mr-2">Hủy</CButton>
                 <CButton @click="resetData()" color="danger" class="mr-2">Hủy</CButton>
                 <CButton @click="senddata()" color="success">Xác nhận</CButton>
             </CCardFooter>
@@ -113,6 +113,7 @@ export default {
       axios.get('http://pintuanphuong.com.vn/api/v1/getuserinfo/'+e)
         .then(response => {
           this.userInfo = response.data;
+          console.log(this.userInfo);
       })  
     },
     setImage: function(output) {
@@ -193,17 +194,22 @@ export default {
         this.thongbaoloi.message = res.data.message;
         this.fixedToasts++;
         this.getUserInfo(this.apiBimat);
-        $cookies.remove('user_data');
+        window.localStorage.auth = false;
         VueCookies.set('user_data', this.userInfo);
       })
     },  
-      onChangeFileUpload(){
+    onChangeFileUpload(){
         this.file = this.$refs.file.files[0]; 
-      },
+    },
 
-      importAll(r) {
+    importAll(r) {
         r.keys().forEach(key => (this.images.push({ pathLong: r(key), pathShort: key })));
-      },
+    },
+
+    getavatarfromcookie: function(){
+       this.userdata = $cookies.get('user_data'); console.log(this.userdata);
+       console.log(this.userInfo);
+    }
   }
 }
 </script>

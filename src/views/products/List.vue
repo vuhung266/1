@@ -94,16 +94,48 @@
       </CCardBody>
       <CCardBody v-show="sua-true">
         <CRow>
-          <CCol sm="12">
-            <CInput label="Thời gian bảo hành" v-model="dataedit.name" placeholder="Nhập..." />
+          <CCol sm="6">
+            <CInput label="Tên sản phẩm" v-model="dataedit.name"  />
+          </CCol>
+          <CCol sm="6">
+            <CInput label="Mã sản phẩm" v-model="dataedit.procode"  />
+          </CCol>
+          <CCol sm="6">
+            <div class="form-group">
+              <label>Loại sản phẩm</label>
+              <select class="form-control" v-model="dataedit.loaisp">
+                  <option v-for="item in loaisp" :key="item.id" :value="item.id" >
+                    {{item.name}}
+                  </option>
+              </select>
+            </div>
+          </CCol>
+          <CCol sm="6">
+            <div class="form-group">
+              <label>Hãng sản xuất</label>
+              <select class="form-control" v-model="dataedit.hangsx">
+                  <option v-for="item in hangsx" :key="item.id" :value="item.id" >
+                    {{item.name}}
+                  </option>
+              </select>
+            </div>
+          </CCol>
+          <CCol sm="6">
+            <div class="form-group">
+              <label>Thời gian bảo hành</label>
+              <select class="form-control" v-model="dataedit.baohanh">
+                  <option v-for="item in timebaohanh" :key="item.id" :value="item.id" >
+                   {{item.name}}
+                  </option>
+              </select>
+            </div>
           </CCol>
         </CRow>
         <CRow>
           <CCol sm="12">
             <CTextarea
                 label="Mô tả"
-                v-model="dataedit.mota"
-                placeholder="Nhập mô tả"
+                v-model="dataedit.description"
                 rows="3"
               />
           </CCol>
@@ -163,8 +195,6 @@ export default {
   created: function () {
     axios.defaults.headers.common['Authorization'] = this.apiBimat;
     this.getAllProducts();
-    this.getAllTimeBaoHanh();
-    this.getAllHangsx();
   },
   methods: {
     getAllProducts: function(){
@@ -175,13 +205,9 @@ export default {
     },
     
     getAllTimeBaoHanh: function(){
-      axios.get('http://pintuanphuong.com.vn/api/v1/timebaohanh')
+        axios.get('http://pintuanphuong.com.vn/api/v1/timebaohanh')
         .then(response => {
           this.timebaohanh = response.data.data;
-          //var data = response.data.data; 
-          //data.forEach(element => {
-            //this.timebaohanh.push({'value': element.id,'label': element.name});
-          //});
         })
     },
 
@@ -193,12 +219,16 @@ export default {
     },
 
     addnew: function() {
+      this.getAllTimeBaoHanh();
+      this.getAllHangsx();
       this.myModal= true;
       this.sua = false;
-      this.titlemodal = 'Thêm thời gian bảo hành'; 
+      this.titlemodal = 'Thêm sản phẩm mới'; 
     },
     
     edit: function(e) {
+      this.getAllTimeBaoHanh();
+      this.getAllHangsx();
       this.myModal= true;
       this.sua = true;
       this.titlemodal = 'Sửa thông tin sản phẩm';

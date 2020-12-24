@@ -126,11 +126,11 @@ export default {
     }
   },
   created: function () {
-    if(this.apiBimat != false){
+    if(this.apiBimat == undefined){
+      console.log('Không lấy đc mã bí mật')
+    }else {
       this.getAllTimeBaoHanh();
       axios.defaults.headers.common['Authorization'] = this.apiBimat;
-    }else {
-      console.log('aaaa')
     }
   },
   methods: {

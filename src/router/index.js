@@ -119,45 +119,25 @@ function configRoutes () {
           ]
         },
         {
-              path: '/pages',
-              redirect: '/pages/404',
-              name: 'Pages',
-              component: {
-                render (c) { return c('router-view') }
-              },
-              children: [
-                {
-                  path: '404',
-                  name: 'Page404',
-                  component: Page404
-                },
-                {
-                  path: '500',
-                  name: 'Page500',
-                  component: Page500
-                },
-                {
-                  path: 'login',
-                  name: 'Login',
-                  component: Login
-                },
-                {
-                  path: 'register',
-                  name: 'Register',
-                  component: Register
-                },
-                {
-                  path: 'quantrinoidung',
-                  name: 'Quản trị trang',
-                  component: Quantrinoidung
-                },
-                {
-                  path: 'texteditor',
-                  name: 'Quản trị nội dung',
-                  component: Texteditor
-                }
-              ]
+          path: 'pages',
+          redirect: '/pages/quantrinoidung/',
+          name: 'Quản trị nội dung',
+          component: {
+            render (c) { return c('router-view') }
+          },
+          children: [
+            {
+              path: 'quantrinoidung',
+              name: 'Quản trị trang',
+              component: Quantrinoidung
             },
+            {
+              path: 'texteditor',
+              name: 'Quản trị nội dung',
+              component: Texteditor
+            }
+          ]
+        },
         {
           path: '/products',
           redirect: '/products/list',
@@ -406,7 +386,36 @@ function configRoutes () {
         }
       ]
     },
-    
+    {
+      path: '/pages',
+      redirect: '/pages/404',
+      name: 'Pages',
+      component: {
+        render (c) { return c('router-view') }
+      },
+      children: [
+        {
+          path: '404',
+          name: 'Page404',
+          component: Page404
+        },
+        {
+          path: '500',
+          name: 'Page500',
+          component: Page500
+        },
+        {
+          path: 'login',
+          name: 'Login',
+          component: Login
+        },
+        {
+          path: 'register',
+          name: 'Register',
+          component: Register
+        }
+      ]
+    }
   ]
 }
 
