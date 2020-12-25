@@ -4,7 +4,7 @@
       <CCardHeader>
         <CIcon name="cil-Puzzle" color="danger" /> Danh sách sản phẩm
         <div class="card-header-actions">
-          <CLink href="#" class="card-header-action btn-setting" @click="addnew">
+          <CLink href="#" class="card-header-action btn-setting" @click="gotoUrl('/products/addnew')">
             <CIcon name="cil-settings" />
           </CLink>
         </div>
@@ -81,6 +81,12 @@
               </select>
             </div>
           </CCol>
+          <CCol sm="6">
+            <div class="form-group">
+              <label>Ảnh đại diện</label>
+              <input class="form-control" type="file" id="file" ref="file" v-on:change="onChangeFileUpload()"/>
+            </div>
+          </CCol>
         </CRow>
         <CRow>
           <CCol sm="12">
@@ -128,6 +134,12 @@
                    {{item.name}}
                   </option>
               </select>
+            </div>
+          </CCol>
+          <CCol sm="6">
+            <div class="form-group">
+              <label>Ảnh đại diện</label>
+              <input class="form-control" type="file" id="file" ref="file" v-on:change="onChangeFileUpload()"/>
             </div>
           </CCol>
         </CRow>
@@ -221,6 +233,7 @@ export default {
     addnew: function() {
       this.getAllTimeBaoHanh();
       this.getAllHangsx();
+      this.dataedit= '',
       this.myModal= true;
       this.sua = false;
       this.titlemodal = 'Thêm sản phẩm mới'; 
@@ -243,47 +256,45 @@ export default {
       }
     },
 
-    senddata: function(){
-      const headers = {
-          'Content-Type': 'application/x-www-form-urlencoded'
-        };
-
-        const payload = {
-          name: this.dataedit.name,
-          mota: this.dataedit.mota,
-        };
-
-        //Send data with form url using querystring node package for it.
-        axios
-          .post('http://pintuanphuong.com.vn/api/v1/sanpham', qs.stringify(payload), {
-            headers: headers
-          })
-          .then(res => {
-            console.log(res.data);
-            this.thongbaoloi = res.data;
-            this.dataedit = [];
-            this.getAllProducts();
-          })
-          .catch(err => {
-            console.log(err);
-          });
-          
-          this.myModal = false;
-          this.fixedToasts++;
-          
-    },
+   
 
     sendEditData: function(e) {
+        let formData = new FormData();
+            if(this.file){  //check xem nếu chọn file
+              var tenanh = this.file.name;
+              formData.append('file', this.file);
+              axios.post('http://pintuanphuong.com.vn/public/api.php',
+                  formData,
+                  {
+                  headers: {
+                      'Content-Type': 'multipart/form-data'
+                  }
+                }
+              ).then(getdata =>{ 
+                if(getdata.data == 'success'){
+                  console.log('đã đẩy ảnh sản phẩm lên server')
+                  this.dataedit.img = 'http://pintuanphuong.com.vn/public/products/'+tenanh
+                }else {
+                  this.dataedit.img = '';
+                  console.log('ko đẩy đc file');
+                }
+               
+              })
+            }else{
+              this.thongbaoloi.message = 'Chưa chọn file';
+              this.fixedToasts++;
+            }
         const headers = {
           'Content-Type': 'application/x-www-form-urlencoded'
         };
 
         const payload = {
-          name: this.dataedit.name,
-          procode: this.dataedit.procode,
-          hangsx: this.dataedit.hangsx,
-          baohanh: this.dataedit.baohanh,
-          description: this.dataedit.description,
+          name:         this.dataedit.name,
+          procode:      this.dataedit.procode,
+          hangsx:       this.dataedit.hangsx,
+          baohanh:      this.dataedit.baohanh,
+          img:          this.dataedit.img,
+          description:  this.dataedit.description,
         };
 
         //Send data with form url using querystring node package for it.
@@ -292,7 +303,7 @@ export default {
             headers: headers
           })
           .then(res => {
-            console.log(res.data);
+            //console.log(res.data);
             this.thongbaoloi = res.data;
             this.getAllProducts();
           })
@@ -334,6 +345,14 @@ export default {
 
     xemChiTietSP: function(e){
       this.$router.push({ path: '/products/detail/'+e });
+    },
+
+    onChangeFileUpload(){
+        this.file = this.$refs.file.files[0];
+    },
+
+    gotoUrl: function(e){
+      this.$router.push({path: e}).catch(err => {});
     }
   }
 }

@@ -15,6 +15,7 @@ const Texteditor = () => import('@/views/pages/Texteditor')
 const Thongtincanhan = () => import('@/views/control/Thongtincanhan')
 const Sanpham = () => import('@/views/products/List')
 const SanphamDetail = () => import('@/views/products/Detail')
+const SanphamAddnew = () => import('@/views/products/Addnew')
 
 const Colors = () => import('@/views/theme/Colors')
 const Typography = () => import('@/views/theme/Typography')
@@ -155,6 +156,11 @@ function configRoutes () {
               path: 'detail/:id',
               name: 'Chi tiết sản phẩm sản phẩm',
               component: SanphamDetail
+            },
+            {
+              path: 'addnew',
+              name: 'Thêm sản phẩm',
+              component: SanphamAddnew
             },
           ]
         },

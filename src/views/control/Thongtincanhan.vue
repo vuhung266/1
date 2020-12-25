@@ -179,7 +179,7 @@ export default {
                
             }
             
-      },
+    },
     updateTextAvatar: function(tenanh) { 
       const headers1 = {
         'Content-Type': 'application/x-www-form-urlencoded'
