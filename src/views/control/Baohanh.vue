@@ -244,7 +244,17 @@ export default {
           this.myModal = false;
           this.fixedToasts++
     },
-  }
+  },
+  computed: {
+        	reverseMessage() {
+        		return this.myModal
+        	}
+        },
+  watch: {
+            reverseMessage() {
+                console.log('message changed')
+            }
+        }
 }
 </script>
 <style scoped>

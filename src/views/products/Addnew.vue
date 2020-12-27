@@ -46,7 +46,7 @@
           <CCol sm="6">
             <div class="form-group">
               <label>Ảnh đại diện</label>
-              <input class="form-control" type="file" id="file" ref="file" v-on:change="onChangeFileUpload('procode')" style="padding:3px"/>
+              <input class="form-control" type="file" id="file" ref="file" :v-model="dataedit.img" v-on:change="onChangeFileUpload('procode')" style="padding:3px"/>
             </div>
           </CCol>
         </CRow>
@@ -61,7 +61,7 @@
         </CRow>
       </CCardBody>
       <CCardFooter>
-        <CButton @click="senddata()" class="float-right" size="sm" color="success"><CIcon name="cil-pencil"/> Thêm sản phẩm</CButton>
+        <CButton @click="sendAddNewData()" class="float-right" size="sm" color="success"><CIcon name="cil-pencil"/> Thêm sản phẩm</CButton>
         <CButton @click="gotoUrl('/products/list')" class="float-right mr-2" size="sm" color="danger"><CIcon name="cil-XCircle"/> Hủy</CButton>
       </CCardFooter>
     </CCard>
@@ -122,11 +122,10 @@ export default {
     },
 
     senddata: function(){
+        var tenanh = ''
         let formData = new FormData();
           if(this.file){
             var tenanh = this.file.name;
-          }else{
-            var tenanh = ''
           }
               formData.append('file', this.file);
               axios.post('http://pintuanphuong.com.vn/public/api.php',
@@ -172,7 +171,63 @@ export default {
           this.fixedToasts++;
           
     },
+     sendAddNewData: function() {
+        let formData = new FormData();
+            if(this.file){  //check xem nếu chọn file
+              var tenanh = this.file.name;
+              formData.append('file', this.file);
+              axios.post('http://pintuanphuong.com.vn/public/api.php',
+                  formData,
+                  {
+                  headers: {
+                      'Content-Type': 'multipart/form-data'
+                  }
+                }
+              ).then(getdata =>{ 
+                if(getdata.data == 'success'){
+                  console.log('đã đẩy ảnh sản phẩm lên server')
+                  this.dataedit.img = 'http://pintuanphuong.com.vn/public/products/'+tenanh;
+                  this.AddNewText();
+                }else {
+                  this.dataedit.img = '';
+                  console.log('ko đẩy đc file');
+                }
+              })
+            }else{
+              this.AddNewText();
+            }
+    },
 
+    AddNewText: function(){
+      const headers = {
+          'Content-Type': 'application/x-www-form-urlencoded'
+        };
+
+        const payload = {
+          name:         this.dataedit.name,
+          procode:      this.dataedit.procode,
+          hangsx:       this.dataedit.hangsx,
+          baohanh:      this.dataedit.baohanh,
+          img:         this.dataedit.img,
+          description:  this.dataedit.description,
+        };
+
+        //Send data with form url using querystring node package for it.
+        axios
+          .post('http://pintuanphuong.com.vn/api/v1/sanpham', qs.stringify(payload), {
+            headers: headers
+          })
+          .then(res => {
+            console.log(res.data);
+            this.thongbaoloi = res.data;
+          })
+          .catch(err => {
+            console.log(err);
+          });
+          
+          this.myModal = false;
+          this.fixedToasts++
+    },
     gotoUrl: function(e){
       this.$router.push({path: e}).catch(err => {});
     }

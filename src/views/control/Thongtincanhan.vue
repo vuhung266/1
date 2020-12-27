@@ -24,7 +24,7 @@
                   <div v-if="userInfo.avatar"><img :src="userInfo.avatar" height=50px /></div>
                 </CCol>
                 <CCol md="8">
-                  <input type="file" id="file" ref="file" v-on:change="onChangeFileUpload()"/>
+                  <input type="file" id="file" name="file" ref="file" v-on:change="onChangeFileUpload()"/>
                 </CCol>
               </CRow>  
             </CCardBody>
@@ -57,7 +57,7 @@
                 </CRow>
                 <CRow>
                     <CCol sm="12">
-                        <CInput label="Xác nhận mật khẩu mới ..." type="password" v-model="newpass2"  />
+                        <CInput label="Xác nhận mật khẩu mới" type="password" v-model="newpass2"  />
                     </CCol>
                 </CRow>
             </CCardBody>
@@ -104,16 +104,28 @@ export default {
     this.getUserInfo(this.apiBimat);
     axios.defaults['masobimat'] = 12345;
     axios.defaults['url'] = 'products/'; 
+
   },
   mounted() {
     //this.importAll(require.context('../imgs/', true, /\.jpg$/));
   },
   methods: {
+    uploaddemo: function(){
+      var formData = new FormData();
+      var imagefile = document.querySelector('#file'); 
+      formData.append("image", imagefile.files[0]);
+      axios.post('http://pintuanphuong.com.vn/api/v1/uploadfile', formData, {
+          headers: {
+            'Content-Type': 'multipart/form-data'
+          }
+      }).then(getdata =>{ 
+                console.log(getdata);
+              })
+    },
     getUserInfo: function(e){
       axios.get('http://pintuanphuong.com.vn/api/v1/getuserinfo/'+e)
         .then(response => {
           this.userInfo = response.data;
-          console.log(this.userInfo);
       })  
     },
     setImage: function(output) {
@@ -162,10 +174,11 @@ export default {
                   formData,
                   {
                   headers: {
-                      'Content-Type': 'multipart/form-data'
+                      //'Content-Type': 'multipart/form-data'
+                      'Content-Type': 'application/x-www-form-urlencoded'
                   }
                 }
-              ).then(getdata =>{ 
+              ).then(getdata =>{ console.log(getdata);
                 if(getdata.data == 'success'){
                   this.updateTextAvatar(tenanh);
                 }else {
@@ -186,6 +199,7 @@ export default {
       };
       const payload1 = {
         avatar: 'http://pintuanphuong.com.vn/public/products/'+ tenanh
+        
       };
       axios.put('http://pintuanphuong.com.vn/api/v1/updateavatar/106fd140cb42137bec5226ffe3cae78d', qs.stringify(payload1), {
           headers: headers1
@@ -194,8 +208,7 @@ export default {
         this.thongbaoloi.message = res.data.message;
         this.fixedToasts++;
         this.getUserInfo(this.apiBimat);
-        window.localStorage.auth = false;
-        VueCookies.set('user_data', this.userInfo);
+        this.$refs.file.files[0] = '';
       })
     },  
     onChangeFileUpload(){

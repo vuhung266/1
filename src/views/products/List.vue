@@ -42,8 +42,8 @@
       </template>
     </CToaster>
 
-    <CModal :title="titlemodal" :show.sync="myModal" size="lg">
-      <CCardBody v-show="sua==true">
+    <CModal title="Sửa thông tin sản phẩm" :show.sync="myModal" size="lg">
+      <CCardBody>
         <CRow>
           <CCol sm="6">
             <CInput label="Tên sản phẩm" v-model="dataedit.name"  />
@@ -83,63 +83,11 @@
           </CCol>
           <CCol sm="6">
             <div class="form-group">
+              <div class="float-left inline-block">
               <label>Ảnh đại diện</label>
-              <input class="form-control" type="file" id="file" ref="file" v-on:change="onChangeFileUpload()"/>
-            </div>
-          </CCol>
-        </CRow>
-        <CRow>
-          <CCol sm="12">
-            <CTextarea
-                label="Mô tả"
-                v-model="dataedit.description"
-                rows="3"
-              />
-          </CCol>
-        </CRow>
-      </CCardBody>
-      <CCardBody v-show="sua-true">
-        <CRow>
-          <CCol sm="6">
-            <CInput label="Tên sản phẩm" v-model="dataedit.name"  />
-          </CCol>
-          <CCol sm="6">
-            <CInput label="Mã sản phẩm" v-model="dataedit.procode"  />
-          </CCol>
-          <CCol sm="6">
-            <div class="form-group">
-              <label>Loại sản phẩm</label>
-              <select class="form-control" v-model="dataedit.loaisp">
-                  <option v-for="item in loaisp" :key="item.id" :value="item.id" >
-                    {{item.name}}
-                  </option>
-              </select>
-            </div>
-          </CCol>
-          <CCol sm="6">
-            <div class="form-group">
-              <label>Hãng sản xuất</label>
-              <select class="form-control" v-model="dataedit.hangsx">
-                  <option v-for="item in hangsx" :key="item.id" :value="item.id" >
-                    {{item.name}}
-                  </option>
-              </select>
-            </div>
-          </CCol>
-          <CCol sm="6">
-            <div class="form-group">
-              <label>Thời gian bảo hành</label>
-              <select class="form-control" v-model="dataedit.baohanh">
-                  <option v-for="item in timebaohanh" :key="item.id" :value="item.id" >
-                   {{item.name}}
-                  </option>
-              </select>
-            </div>
-          </CCol>
-          <CCol sm="6">
-            <div class="form-group">
-              <label>Ảnh đại diện</label>
-              <input class="form-control" type="file" id="file" ref="file" v-on:change="onChangeFileUpload()"/>
+              <input class="form-control" type="file" id="file" ref="file" v-on:change="onChangeFileUpload()" style="padding:3px"/>
+              </div>
+              <img :src="dataedit.img" class="float-left" style="max-width:90px" />
             </div>
           </CCol>
         </CRow>
@@ -155,8 +103,7 @@
       </CCardBody>
       <template #footer>
         <CButton @click="myModal = false" color="danger">Hủy</CButton>
-        <CButton @click="senddata()" color="success" v-show="sua-true">Thêm mới</CButton>
-        <CButton @click="sendEditData(dataedit.id)" color="success" v-show="sua==true">Sửa thông tin</CButton>
+        <CButton @click="sendEditData(dataedit.id)" color="success">Sửa thông tin</CButton>
       </template>
     </CModal>
 
@@ -168,7 +115,7 @@
       size="lg"
       color="dark"
     >
-      Bạn có muốn xóa bản ghi: <b class="color-primary"> {{itemBiXoa.name}} </b>khỏi hệ thống?
+      Bạn có muốn xóa sản phẩm: <b class="color-primary"> {{itemBiXoa.name}} </b>khỏi hệ thống?
       <template #header>
         <h6 class="modal-title">Thông báo</h6>
         <CButtonClose @click="ModalDelete = false" class="text-white"/>
@@ -189,10 +136,8 @@ const qs = require('querystring');
 export default {
   data () {
     return {
-      titlemodal:'',
       myModal: false,
       products: [],
-      sua: false,
       dataedit: [],
       ketqua:[],
       fixedToasts: 0,
@@ -229,22 +174,11 @@ export default {
           this.hangsx = response.data.hangsx; 
         })
     },
-
-    addnew: function() {
-      this.getAllTimeBaoHanh();
-      this.getAllHangsx();
-      this.dataedit= '',
-      this.myModal= true;
-      this.sua = false;
-      this.titlemodal = 'Thêm sản phẩm mới'; 
-    },
     
     edit: function(e) {
       this.getAllTimeBaoHanh();
       this.getAllHangsx();
       this.myModal= true;
-      this.sua = true;
-      this.titlemodal = 'Sửa thông tin sản phẩm';
       this.dataedit = this.getValuebyId(this.products, e); 
     },
     
@@ -255,8 +189,6 @@ export default {
         }
       }
     },
-
-   
 
     sendEditData: function(e) {
         let formData = new FormData();
@@ -273,18 +205,20 @@ export default {
               ).then(getdata =>{ 
                 if(getdata.data == 'success'){
                   console.log('đã đẩy ảnh sản phẩm lên server')
-                  this.dataedit.img = 'http://pintuanphuong.com.vn/public/products/'+tenanh
+                  this.dataedit.img = 'http://pintuanphuong.com.vn/public/products/'+tenanh;
+                  this.updateTextEdit(e);
                 }else {
                   this.dataedit.img = '';
                   console.log('ko đẩy đc file');
                 }
-               
               })
             }else{
-              this.thongbaoloi.message = 'Chưa chọn file';
-              this.fixedToasts++;
+              this.updateTextEdit(e);
             }
-        const headers = {
+    },
+
+    updateTextEdit: function(e){
+      const headers = {
           'Content-Type': 'application/x-www-form-urlencoded'
         };
 
@@ -293,7 +227,7 @@ export default {
           procode:      this.dataedit.procode,
           hangsx:       this.dataedit.hangsx,
           baohanh:      this.dataedit.baohanh,
-          img:          this.dataedit.img,
+          img:         this.dataedit.img,
           description:  this.dataedit.description,
         };
 
@@ -303,7 +237,7 @@ export default {
             headers: headers
           })
           .then(res => {
-            //console.log(res.data);
+            console.log(res.data);
             this.thongbaoloi = res.data;
             this.getAllProducts();
           })
@@ -327,7 +261,7 @@ export default {
 
         //Send data with form url using querystring node package for it.
         axios
-          .delete('http://pintuanphuong.com.vn/api/v1/products/'+e, {
+          .delete('http://pintuanphuong.com.vn/api/v1/sanpham/'+e, {
             headers: headers
           })
           .then(res => {

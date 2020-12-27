@@ -1,0 +1,21 @@
+{
+  "name": "example-auth-routes",
+  "dependencies": {
+    "axios": "^0.19.0",
+    "body-parser": "^1.17.2",
+    "bootstrap": "^4.5.3",
+    "bootstrap-vue": "^2.20.1",
+    "express": "^4.15.3",
+    "express-session": "^1.15.3",
+    "nuxt": "latest",
+    "vue": "^2.6.12",
+    "vue-cookies": "^1.7.4",
+    "vue-router": "^3.4.9"
+  },
+  "scripts": {
+    "dev": "nuxt",
+    "build": "nuxt build",
+    "start": "nuxt start",
+    "post-update": "yarn upgrade --latest"
+  }
+}

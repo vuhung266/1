@@ -89,7 +89,7 @@ export default {
           .then(res => {
             this.thongbaoloi = res.data.message;
             if(res.data.error == false){
-              this.auth = res.data;
+              this.auth = res.data; console.log(this.auth);
               this.$store.commit('set', ['auth', this.auth]);
               window.localStorage.auth = true;
               VueCookies.set('user_data', res.data);

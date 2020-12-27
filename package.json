@@ -41,7 +41,7 @@
     "querystring": "^0.2.0",
     "vue": "~2.6.12",
     "vue-cookie": "^1.1.4",
-    "vue-cookies": "^1.7.0",
+    "vue-cookies": "^1.7.4",
     "vue-image-upload-resize": "^2.3.0",
     "vue-router": "~3.4.3",
     "vuelidate": "^0.7.6",

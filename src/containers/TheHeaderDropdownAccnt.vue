@@ -26,6 +26,7 @@
 </template>
 
 <script>
+import axios from 'axios';
 import VueCookies from 'vue-cookies';
 export default {
   name: 'TheHeaderDropdownAccnt',
@@ -35,9 +36,11 @@ export default {
       userdata:[]
     }
   },
-  created: function () { 
+  created: function () {
     this.userdata = $cookies.get('user_data'); console.log(this.userdata);
-    if (this.userdata == null) {
+    //axios.defaults.headers.common['Authorization'] = this.apiBimat;
+    this.getUserInfo(this.apiBimat);
+    if (this.apiBimat == null) {
       this.$router.push({path: '/pages/login'});
     }
   },
@@ -48,7 +51,14 @@ export default {
     },
     gotoUrl: function(e){
       this.$router.push({path: e}).catch(err => {});
-    }
+    },
+    getUserInfo: function(e){
+      axios.get('http://pintuanphuong.com.vn/api/v1/getuserinfo/'+e)
+        .then(response => {
+          this.userInfo = response.data;
+          console.log(this.userInfo);
+      })  
+    },
   }
 }
 </script>
