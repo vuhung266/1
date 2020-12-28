@@ -29,6 +29,12 @@ export default [
         icon: 'cil-Calculator'
       },
       {
+        _name: 'CSidebarNavItem',
+        name: 'Thùng rác',
+        to: '/control/recyclebin',
+        icon: 'cil-trash'
+      },
+      {
         _name: 'CSidebarNavTitle',
         _children: ['Quản trị nội dung']
       },

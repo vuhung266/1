@@ -27,10 +27,10 @@
                <CButton color="danger" variant="outline" size="sm" @click="deleteAsk(item.id);" :disabled="disabled" class="mr-2">
                 <CIcon name="cil-XCircle" /> Xóa
               </CButton>
-              <CButton color="primary" variant="outline" v-show="item.edit == false" size="sm" :disabled="disabled" @click="item.edit = true; edit(item.id); disabled = !disabled">
+              <CButton color="primary" variant="outline" v-show=" item.edit == false" size="sm" :disabled="disabled" @click="item.edit = true; edit(item.id); disabled = !disabled">
                 <CIcon name="cil-pencil" /> Sửa
               </CButton>
-              <CButton color="danger" v-show="item.edit == true" size="sm"  @click="item.edit = false; disabled =false; resetval(item.id)">
+              <CButton color="danger" v-show=" item.edit == true" size="sm"  @click="item.edit = false; disabled =false; resetval(item.id)">
                   <CIcon name="cil-XCircle"  size="sm" /> Hủy
                 </CButton>
             </td>

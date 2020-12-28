@@ -13,6 +13,7 @@ const Baohanh = () => import('@/views/control/Baohanh')
 const Quantrinoidung = () => import('@/views/pages/Quantrinoidung')
 const Texteditor = () => import('@/views/pages/Texteditor')
 const Thongtincanhan = () => import('@/views/control/Thongtincanhan')
+const RecycleBin = () => import('@/views/control/Recyclebin')
 const Sanpham = () => import('@/views/products/List')
 const SanphamDetail = () => import('@/views/products/Detail')
 const SanphamAddnew = () => import('@/views/products/Addnew')
@@ -116,6 +117,11 @@ function configRoutes () {
               path: 'thongtincanhan',
               name: 'Thông tin cá nhân',
               component: Thongtincanhan
+            },
+            {
+              path: 'recycleBin',
+              name: 'Thùng rác',
+              component: RecycleBin
             }
           ]
         },
