@@ -24,7 +24,7 @@
                       </span>
                     </td>
                     <td style="width:240px">
-                      <CButton color="danger" variant="outline" size="sm" class="mr-2">
+                      <CButton color="danger" variant="outline" size="sm" class="mr-2" @click="confirmDelete(item.id,'hangsx')">
                         <CIcon name="cil-XCircle" /> Xóa vĩnh viễn
                       </CButton>
                       <CButton color="primary" variant="outline" size="sm" @click="confirmOrder(item.id,'hangsx')">
@@ -53,7 +53,7 @@
                         <i>{{item.mota}}</i>
                       </td>
                       <td style="width:240px">
-                        <CButton color="danger" variant="outline" size="sm" @click="" class="mr-2">
+                        <CButton color="danger" variant="outline" size="sm" @click="" class="mr-2" @click="confirmDelete(item.id,'timebaohanh')">
                           <CIcon name="cil-XCircle" /> Xóa vĩnh viễn
                         </CButton>
                         <CButton color="primary" variant="outline" size="sm"  @click="confirmOrder(item.id,'timebaohanh')">
@@ -84,7 +84,7 @@
                         <small>Hãng: <span class="text-success">{{item.hangsanxuat}}</span> | Bảo hành: <span class="text-success">{{item.thoigianbaohanh}}</span></small>
                       </CCol>
                       <CCol col="12" md="6" lg="4" class="text-center">
-                          <CButton color="danger" variant="outline" size="sm" class="mr-2">
+                          <CButton color="danger" variant="outline" size="sm" class="mr-2" @click="confirmDelete(item.id,'products')">
                               <CIcon name="cil-XCircle" /> Xóa vĩnh viễn
                           </CButton>
                           <CButton color="primary" variant="outline" size="sm"  @click="confirmOrder(item.id,'products')">
@@ -125,9 +125,9 @@
       </template>
       <template #footer>
         <CButton @click="ModalDisplay = false" color="danger">Hủy</CButton>
-        <CButton v-show=" show_btn_product      == true" color="success" @click="revertProduct(idchoice)"     >Khôi phục sản phẩm</CButton>
-        <CButton v-show=" show_btn_hangsx       == true" color="success" @click="revertHangsx(idchoice)"      >Khôi phục</CButton>
-        <CButton v-show=" show_btn_timebaohanh  == true" color="success" @click="revertTimebaohanh(idchoice)" >Khôi phục</CButton>
+        <CButton v-show=" show_btn_product      == true" color="success" @click="revertItem(idchoice, 'sanphamrevert')"     >Khôi phục sản phẩm</CButton>
+        <CButton v-show=" show_btn_hangsx       == true" color="success" @click="revertItem(idchoice, 'hangsxrevert')"      >Khôi phục</CButton>
+        <CButton v-show=" show_btn_timebaohanh  == true" color="success" @click="revertItem(idchoice, 'timebaohanhrevert')" >Khôi phục</CButton>
       </template>
     </CModal>
 
@@ -139,16 +139,17 @@
       size="lg"
       color="dark"
     >
-      Bạn có muốn xóa vĩnh viễn bản ghi này không? Bản ghi bị xóa sẽ không khôi phục được nữa
+      <h4>Bạn có muốn xóa vĩnh viễn bản ghi này không?</h4>
+      Lưu ý: Bản ghi bị xóa sẽ không khôi phục được nữa
       <template #header>
         <h6 class="modal-title">Thông báo</h6>
         <CButtonClose @click="ModalDelete = false" class="text-white"/>
       </template>
       <template #footer>
         <CButton @click="ModalDelete = false" color="danger">Hủy</CButton>
-        <CButton v-show=" show_btn_product      == true" color="success" @click="revertProduct(idchoice)"     >Xóa vĩnh viễn sản phẩm</CButton>
-        <CButton v-show=" show_btn_hangsx       == true" color="success" @click="revertHangsx(idchoice)"      >Xóa vĩnh viễn</CButton>
-        <CButton v-show=" show_btn_timebaohanh  == true" color="success" @click="revertTimebaohanh(idchoice)" >Xóa vĩnh viễn</CButton>
+        <CButton v-show=" show_btn_product      == true" color="success" @click="removeitem(idchoice,'sanphamremove')"      >Xóa vĩnh viễn sản phẩm</CButton>
+        <CButton v-show=" show_btn_hangsx       == true" color="success" @click="removeitem(idchoice,'hangsxremove')"       >Xóa vĩnh viễn</CButton>
+        <CButton v-show=" show_btn_timebaohanh  == true" color="success" @click="removeitem(idchoice,'timebaohanhremove')"  >Xóa vĩnh viễn</CButton>
       </template>
     </CModal>
 
@@ -209,6 +210,7 @@ export default {
           this.CountProducts = this.products.length;
         })
     },
+
     confirmOrder: function(e, type){
       this.idchoice = e;
       this.ModalDisplay = true;
@@ -228,74 +230,72 @@ export default {
         this.show_btn_timebaohanh = true;
       }
     },
-    revertProduct:function(e){
+    revertItem:function(e, link){
       const headers = {
           'Content-Type': 'application/x-www-form-urlencoded'
       };
       axios
-        .put('http://pintuanphuong.com.vn/api/v1/sanphamrevert/'+e, {
+        .put('http://pintuanphuong.com.vn/api/v1/'+link+'/'+e, {
           headers: headers
         })
         .then(res => {
           this.thongbaoloi = res.data;
-          this.getAllProductsDaXoa();
           this.ModalDisplay = false;
+          if(link == 'sanphamrevert'){
+            this.getAllProductsDaXoa();
+          }
+          if(link == 'hangsxrevert'){
+            this.getAllHangsxDaXoa();
+          }
+          if(link == 'timebaohanhrevert'){
+            this.getAllTimeBaoHanhDaXoa();
+          }
         })
         .catch(err => {
           console.log(err);
         });
         this.fixedToasts++
     },
-    deleteitem: function(e) {
-        const headers = {
-          'Content-Type': 'application/x-www-form-urlencoded'
-        };
-        axios
-          .delete('http://pintuanphuong.com.vn/api/v1/sanphamremove/'+e, {
-            headers: headers
-          })
-          .then(res => {
-            console.log(res.data);
-            this.thongbaoloi = res.data;
-            this.getAllHangsx();
-            this.ModalDelete = false;
-          })
-          .catch(err => {
-            console.log(err);
-          });
-          this.myModal = false;
-          this.fixedToasts++
+
+    confirmDelete: function(e, type){
+      this.idchoice = e;
+      this.ModalDelete = true;
+      if(type == 'products'){
+        this.show_btn_hangsx      = false;
+        this.show_btn_product     = true;
+        this.show_btn_timebaohanh = false;  
+      }
+      if(type == 'hangsx'){
+        this.show_btn_hangsx      = true;
+        this.show_btn_product     = false;
+        this.show_btn_timebaohanh = false;
+      }
+      if(type == 'timebaohanh'){
+        this.show_btn_hangsx      = false;
+        this.show_btn_product     = false;
+        this.show_btn_timebaohanh = true;
+      }
     },
-    revertHangsx:function(e){
+    removeitem:function(e, link){
       const headers = {
           'Content-Type': 'application/x-www-form-urlencoded'
       };
       axios
-        .put('http://pintuanphuong.com.vn/api/v1/hangsxrevert/'+e, {
+        .put('http://pintuanphuong.com.vn/api/v1/'+link+'/'+e, {
           headers: headers
         })
         .then(res => {
           this.thongbaoloi = res.data;
-          this.getAllHangsxDaXoa();
-          this.ModalDisplay = false;
-        })
-        .catch(err => {
-          console.log(err);
-        });
-        this.fixedToasts++
-    },
-    revertTimebaohanh:function(e){
-      const headers = {
-          'Content-Type': 'application/x-www-form-urlencoded'
-      };
-      axios
-        .put('http://pintuanphuong.com.vn/api/v1/timebaohanhrevert/'+e, {
-          headers: headers
-        })
-        .then(res => {
-          this.thongbaoloi = res.data;
-          this.getAllTimeBaoHanhDaXoa();
-          this.ModalDisplay = false;
+          this.ModalDelete = false;
+          if(link == 'sanphamremove'){
+            this.getAllProductsDaXoa();
+          }
+          if(link == 'hangsxremove'){
+            this.getAllHangsxDaXoa();
+          }
+          if(link == 'timebaohanhremove'){
+            this.getAllTimeBaoHanhDaXoa();
+          }
         })
         .catch(err => {
           console.log(err);
