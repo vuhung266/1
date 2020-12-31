@@ -208,7 +208,8 @@ export default {
         this.thongbaoloi.message = res.data.message;
         this.fixedToasts++;
         this.getUserInfo(this.apiBimat);
-        this.$refs.file.files[0] = '';
+        window.localStorage.avatar = 'http://pintuanphuong.com.vn/public/products/'+ tenanh;
+        location.reload();
       })
     },  
     onChangeFileUpload(){
