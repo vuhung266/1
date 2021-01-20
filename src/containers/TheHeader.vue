@@ -17,7 +17,7 @@
 
     </CHeaderNav>
     <CHeaderNav class="mr-4">
-      <TheHeaderDropdownAccnt/>
+      <TheHeaderDropdownAccnt />
     </CHeaderNav>
     <CSubheader class="px-3">
       <CBreadcrumbRouter class="border-0 mb-0"/>

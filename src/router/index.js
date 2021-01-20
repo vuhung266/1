@@ -10,8 +10,8 @@ const Test = () => import('@/views/Test')
 
 const Hangsx = () => import('@/views/control/Hangsx')
 const Baohanh = () => import('@/views/control/Baohanh')
-const Quantrinoidung = () => import('@/views/pages/Quantrinoidung')
-const Texteditor = () => import('@/views/pages/Texteditor')
+const Quantrinoidung = () => import('@/views/noidung/Quantrinoidung')
+const Texteditor = () => import('@/views/noidung/Texteditor')
 const Thongtincanhan = () => import('@/views/control/Thongtincanhan')
 const RecycleBin = () => import('@/views/control/Recyclebin')
 const Sanpham = () => import('@/views/products/List')
@@ -122,26 +122,6 @@ function configRoutes () {
               path: 'recycleBin',
               name: 'Thùng rác',
               component: RecycleBin
-            }
-          ]
-        },
-        {
-          path: 'pages',
-          redirect: '/pages/quantrinoidung/',
-          name: 'Quản trị nội dung',
-          component: {
-            render (c) { return c('router-view') }
-          },
-          children: [
-            {
-              path: 'quantrinoidung',
-              name: 'Quản trị trang',
-              component: Quantrinoidung
-            },
-            {
-              path: 'texteditor',
-              name: 'Quản trị nội dung',
-              component: Texteditor
             }
           ]
         },
@@ -393,6 +373,26 @@ function configRoutes () {
               path: 'modals',
               name: 'Modals',
               component: Modals
+            }
+          ]
+        },
+        {
+          path: 'noidung',
+          redirect: '/noidung/quantrinoidung',
+          name: 'Quản trị nội dung',
+          component: {
+            render (c) { return c('router-view') }
+          },
+          children: [
+            {
+              path: 'quantrinoidung',
+              name: 'Quản trị trang',
+              component: Quantrinoidung
+            },
+            {
+              path: 'texteditor',
+              name: 'Nhập liệu',
+              component: Texteditor
             }
           ]
         }

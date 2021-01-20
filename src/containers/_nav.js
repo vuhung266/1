@@ -41,7 +41,7 @@ export default [
       {
         _name: 'CSidebarNavItem',
         name: 'Các trang nội dung',
-        to: '/pages/quantrinoidung',
+        to: '/noidung/quantrinoidung',
         icon: 'cil-Layers'
       },
       {

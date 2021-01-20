@@ -52,6 +52,9 @@ export default {
     ]
   };
 },
+created:function(){
+  
+},
   methods: {
     setTime(seconds) {
       clearInterval(intervalTimer);

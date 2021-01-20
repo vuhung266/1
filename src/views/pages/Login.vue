@@ -89,9 +89,11 @@ export default {
           .then(res => {
             this.thongbaoloi = res.data.message;
             if(res.data.error == false){
-              this.auth = res.data; console.log(this.auth);
+              this.auth = res.data;
               this.$store.commit('set', ['auth', this.auth]);
               window.localStorage.auth = true;
+              window.localStorage.masobimat = res.data.apiKey;
+              window.localStorage.avatar = res.data.avatar;
               VueCookies.set('user_data', res.data);
               this.$router.push({ path: '/' });
             }

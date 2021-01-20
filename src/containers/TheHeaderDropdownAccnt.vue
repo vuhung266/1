@@ -8,9 +8,9 @@
     <template #toggler>
       <CHeaderNavLink>
         <div class="c-avatar">
-          <img v-if="userdata"
-            :src="userdata.avatar"
-            class="c-avatar-img "
+          <img 
+            :src="userAvatar"
+            class="c-avatar-img"
           />
         </div>
       </CHeaderNavLink>
@@ -27,28 +27,26 @@
 
 <script>
 import axios from 'axios';
-import VueCookies from 'vue-cookies';
 export default {
   name: 'TheHeaderDropdownAccnt',
   data () {
     return { 
+      userAvatar:'',
       itemsCount: 42,
-      userdata:[]
+      userdata:[],
     }
   },
   created: function () {
     this.userdata = $cookies.get('user_data'); 
-    console.log(this.apiBimat)
-    //axios.defaults.headers.common['Authorization'] = this.apiBimat;
-    this.getUserInfo(this.apiBimat);
-    if (!this.apiBimat) {
-      this.$router.push({path: '/pages/logout'});
-    }
+    axios.defaults.headers.common['Authorization'] = this.apiBimat;
+    this.userAvatar = window.localStorage.avatar;
   },
   methods: {
     logout: function(){
       window.localStorage.auth = false;
+      localStorage.removeItem('userAuth')
       this.$router.push({path: '/pages/login'});
+      
     },
     gotoUrl: function(e){
       this.$router.push({path: e}).catch(err => {});
@@ -58,7 +56,7 @@ export default {
         .then(response => {
           this.userInfo = response.data;
       })  
-    },
+    }
   }
 }
 </script>

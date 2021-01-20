@@ -24,9 +24,8 @@ Vue.mixin({
   data: function() {
     return {
       get apiBimat() {
-        if($cookies.get('user_data')){
-          var bimat1 = $cookies.get('user_data'); 
-          return bimat1.apiKey;
+        if(localStorage.getItem('masobimat')){
+          return localStorage.getItem('masobimat');
         }else{
           this.$router.push({path: '/pages/login'});
           return fail;
