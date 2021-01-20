@@ -74,7 +74,7 @@ export default {
   },
   methods: {
     senddata: function(){ 
-      const headers = {
+        const headers = {
           'Content-Type': 'application/x-www-form-urlencoded'
         };
         const payload = {

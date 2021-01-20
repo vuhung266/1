@@ -167,7 +167,8 @@ export default {
     },
     submitForm: function() {
             let formData = new FormData();
-            if(this.file){  //check xem nếu chọn file
+            if(this.file){  console.log(this.file)
+              //check xem nếu chọn file
               var tenanh = this.file.name;
               formData.append('file', this.file);
               axios.post('http://pintuanphuong.com.vn/public/api.php',
@@ -180,7 +181,7 @@ export default {
                 }
               ).then(getdata =>{ console.log(getdata);
                 if(getdata.data == 'success'){
-                  this.updateTextAvatar(tenanh);
+                //  this.updateTextAvatar(tenanh);
                 }else {
                   console.log('ko đẩy đc file');
                 }
